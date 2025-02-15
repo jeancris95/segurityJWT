@@ -9,4 +9,5 @@ public interface UsuarioService {
    void guardarUsuario(Usuario user);
    Usuario encriptarPass(Usuario usuario);
    List<String> obtenerRolesDeUsuario(String username);
+   void saveUser(Usuario user);
 }

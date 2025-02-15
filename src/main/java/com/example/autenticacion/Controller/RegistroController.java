@@ -11,13 +11,11 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class RegistroController {
     private final UsuarioService usuarioService;
-    private final UserDetailService userDetailService;
 
     @PostMapping("/register")
     @PreAuthorize("hasRole('ADMIN')")
     public String register(@RequestBody Usuario usuario) {
-        Usuario user= usuarioService.encriptarPass(usuario);
-        usuarioService.guardarUsuario(user);
+       usuarioService.saveUser(usuario);
         return "Usuario registrado correctamente";
     }
 

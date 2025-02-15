@@ -6,6 +6,7 @@ import com.example.autenticacion.entity.UsuarioEntity;
 import com.example.autenticacion.mappers.UsuarioMapper;
 import com.example.autenticacion.repository.UsuarioRepository;
 import com.example.autenticacion.services.UsuarioService;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,17 +21,31 @@ public class UsuarioServiceImpl implements UsuarioService {
     private final PasswordEncoder passwordEncoder;
     private final UsuarioRepository usuarioRepository;
     private final UsuarioMapper usuarioMapper; // Aquí se inyecta el mapper de MapStruct
-
+    @Transactional
     @Override
     public void guardarUsuario(Usuario user) {
         usuarioRepository.save(usuarioMapper.toEntity(user)); // Usando MapStruct para convertir
     }
 
+    @Transactional
     @Override
     public Usuario encriptarPass(Usuario usuario) {
         usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
         return usuario;
     }
+
+    //usando patrón builder
+    @Transactional
+    @Override
+    public void saveUser(Usuario user) {
+        Usuario usuario = Usuario.builder()
+                .username(user.getUsername())
+                .role(user.getRole())
+                .password(passwordEncoder.encode(user.getPassword()))
+                .build();
+        guardarUsuario(usuario);
+    }
+
 
     @Override
     public List<String> obtenerRolesDeUsuario(String username) {
@@ -40,4 +55,6 @@ public class UsuarioServiceImpl implements UsuarioService {
                 .collect(Collectors.toList());
 
     }
+
+
 }
