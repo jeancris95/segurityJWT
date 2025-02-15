@@ -27,11 +27,8 @@ public class UsuarioServiceImpl implements UsuarioService {
         usuarioRepository.save(usuarioMapper.toEntity(user)); // Usando MapStruct para convertir
     }
 
-    @Transactional
-    @Override
-    public Usuario encriptarPass(Usuario usuario) {
-        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
-        return usuario;
+    private String encriptarPass(String pass) {
+        return  passwordEncoder.encode(pass);
     }
 
     //usando patrón builder
@@ -41,7 +38,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         Usuario usuario = Usuario.builder()
                 .username(user.getUsername())
                 .role(user.getRole())
-                .password(passwordEncoder.encode(user.getPassword()))
+                .password(encriptarPass(user.getPassword()))
                 .build();
         guardarUsuario(usuario);
     }
